@@ -39,7 +39,6 @@ root.geometry("960x500")
 root.resizable = False
 root.config(background="#088a88")
 
-items_drinks = menu["drinks"]
 
 orders = []
 
@@ -184,7 +183,22 @@ frame_dessert.rowconfigure(2, weight=1)
 
 # DESSERT BUTT
 def take_order_dessert(id_dessert):
-    orders.append(menu["dessert"][id_dessert])
+    found = False
+    for i, order_item in enumerate(orders):
+        if order_item[0] == menu["dessert"][id_dessert][0]:
+            found = True
+            break
+
+    if not found:
+        orders.append(
+            [menu["dessert"][id_dessert][0], menu["dessert"][id_dessert][1], 1]
+        )
+
+    item_values = menu["dessert"][id_dessert]
+
+    item_values.append(orders[-1][-1])
+
+    bill.insert("", "end", values=item_values)
 
 
 commands_desserts = menu["dessert"]
@@ -214,7 +228,20 @@ commands_drinks = menu["drinks"]
 
 
 def take_order_drinks(id_drink):
-    orders.append(menu["drinks"][id_drink])
+    found = False
+    for i, order_item in enumerate(orders):
+        if order_item[0] == menu["drinks"][id_drink][0]:
+            found = True
+            break
+
+    if not found:
+        orders.append([menu["drinks"][id_drink][0], menu["drinks"][id_drink][1], 1])
+
+    item_values = menu["drinks"][id_drink]
+
+    item_values.append(orders[-1][-1])
+
+    bill.insert("", "end", values=item_values)
 
 
 COLUMNS = 4
@@ -238,7 +265,16 @@ frame_soda.rowconfigure(1, weight=1)
 frame_soda.rowconfigure(2, weight=1)
 # SODA BUTT
 def take_order_soda(id_soda):
-    orders.append(menu["soda"][id_soda])
+    found = False
+    for i, order_item in enumerate(orders):
+        if order_item[0] == menu["soda"][id_soda][0]:
+            found = True
+            break
+    if not found:
+        orders.append([menu["soda"][id_soda][0], menu["soda"][id_soda][1], 1])
+    item_values = menu["soda"][id_soda]
+    item_values.append(orders[-1][-1])
+    bill.insert("", "end", values=item_values)
 
 
 commandss_sodas = menu["soda"]
@@ -264,7 +300,20 @@ frame_meal.rowconfigure(2, weight=1)
 
 # MEAL BUTT
 def take_order_meal(id_meal):
-    orders.append(menu["meal"][id_meal])
+    found = False
+    for i, order_item in enumerate(orders):
+        if order_item[0] == menu["meal"][id_meal][0]:
+            found = True
+            break
+
+    if not found:
+        orders.append([menu["meal"][id_meal][0], menu["meal"][id_meal][1], 1])
+
+    item_values = menu["meal"][id_meal]
+
+    item_values.append(orders[-1][-1])
+
+    bill.insert("", "end", values=item_values)
 
 
 commands_meals = menu["meal"]
@@ -292,9 +341,18 @@ frame_salad.rowconfigure(2, weight=1)
 
 
 def take_order_salad(id_salad):
-    orders.append(menu["salad"][id_salad])
-    item_value = menu["salad"][id_salad]
-    bill.insert("", "end", value=item_value)
+    found = False
+    for i, order_item in enumerate(orders):
+        if order_item[0] == menu["salad"][id_salad][0]:
+            found = True
+            break
+
+    if not found:
+        orders.append([menu["salad"][id_salad][0], menu["salad"][id_salad][1], 1])
+
+    item_values = menu["salad"][id_salad]
+    item_values.append(orders[-1][-1])
+    bill.insert("", "end", values=item_values)
 
 
 commands_salads = menu["salad"]
@@ -356,8 +414,6 @@ for i, item in enumerate(item_photo_list):
     menu_button.grid(row=row, column=column, sticky="news", padx=10, pady=10)
 
 # left
-l2 = tkinter.Radiobutton(frame_left, text="frame_mid")
-l2.grid(row=0, column=0, padx=5, pady=5)
 
 Table_b = tkinter.Button(frame_left, text="TABLE", width=15, height=2, command=Table)
 Table_b.grid(row=2, column=0)
@@ -369,8 +425,16 @@ Menu_b.grid(row=3, column=0)
 label_frame_ = tkinter.Label(frame_left, text="Table")
 
 
+def total():
+    bil = []
+    for i in orders:
+        bil.append(float(i[1]))
+    sum_ = sum(bil)
+    print(round(sum_, 2))
+
+
 # right
-Menu_b = tkinter.Button(frame_right, text="Click Me")
+Menu_b = tkinter.Button(frame_right, text="Click Me", command=total)
 Menu_b.pack(fill="both", expand=True)
 
 
