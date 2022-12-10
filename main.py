@@ -102,21 +102,12 @@ root.rowconfigure(2, weight=1)
 
 
 # icon images
-photo_salad = Image.open(
-    "C:/Users/Alexander/Desktop/Desktop/Portfolio/Order_system/salad.png"
-)
-photo_meal = Image.open(
-    "C:/Users/Alexander/Desktop/Desktop/Portfolio/Order_system/meal.png"
-)
-photo_soda = Image.open(
-    "C:/Users/Alexander/Desktop/Desktop/Portfolio/Order_system/soda.png"
-)
-photo_drinks = Image.open(
-    "C:/Users/Alexander/Desktop/Desktop/Portfolio/Order_system/drinks.png"
-)
-photo_dessert = Image.open(
-    "C:/Users/Alexander/Desktop/Desktop/Portfolio/Order_system/dessert.png"
-)
+photo_salad = Image.open("./salad.png")
+photo_meal = Image.open("./meal.png")
+photo_soda = Image.open("./soda.png")
+photo_drinks = Image.open("./drinks.png")
+photo_dessert = Image.open("./dessert.png")
+
 
 
 photo_salad = photo_salad.resize((105, 85))
