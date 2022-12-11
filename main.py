@@ -4,10 +4,10 @@ from PIL import Image, ImageTk
 import mysql.connector
 
 
-# con = mysql.connector.connect(host="localhost", user="user", password="", database="")
-# cursor = con.cursor()
-# cursor.execute("CREATE TABLE IF NOT EXIST orders (item TEXT,price TEXT)")
-# con.commit()
+con = mysql.connector.connect(host="localhost", user="root", password=" ", database=" ")
+cursor = con.cursor()
+cursor.execute("CREATE TABLE IF NOT EXISTS orders (table_id TEXT,bill TEXT)")
+con.commit()
 
 
 menu = {
@@ -397,9 +397,13 @@ frame_mid_2.rowconfigure(2, weight=1)
 
 # TABLE BUTT
 
+the_id = 0
 
-def get_table_id(table_id):
-    return table_id
+
+def get_table_id(id_):
+    global the_id
+    the_id = id_
+    return the_id
 
 
 COLUMNS = 4
@@ -410,7 +414,7 @@ for i, item in enumerate(range(5)):
         frame_mid_2,
         bg="yellow",
         text="Table 0" + str(i),
-        command=lambda id=id: print(id),
+        command=lambda id=id: get_table_id(id),
     )
     row, column = divmod(i, COLUMNS)
     menu_button.grid(row=row, column=column, sticky="NEWS", padx=10, pady=10)
@@ -474,14 +478,22 @@ button.grid(row=1, column=0)
 
 
 def total():
+    global the_id
+
     bil = []
     for i in orders:
         bil.append(float(i[1]) * int(i[-1]))
     sum_ = sum(bil)
-    print("%.2f" % sum_)
+    the_sum = "%.2f" % sum_
 
     l1 = tkinter.Label(frame_left, text="%.2f" % sum_, bg="lightblue")
     l1.grid(row=0, column=0, padx=5, pady=5)
+
+    cursor.execute(
+        "INSERT INTO orders (table_id, bill) VALUES (%s, %s)", (the_id, the_sum)
+    )
+    # Save the changes to the database
+    con.commit()
     orders.clear()
     bill.delete(*bill.get_children())
 
