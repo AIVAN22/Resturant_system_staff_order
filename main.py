@@ -4,6 +4,12 @@ from PIL import Image, ImageTk
 import mysql.connector
 
 
+# con = mysql.connector.connect(host="localhost", user="user", password="", database="")
+# cursor = con.cursor()
+# cursor.execute("CREATE TABLE IF NOT EXIST orders (item TEXT,price TEXT)")
+# con.commit()
+
+
 menu = {
     "salad": [
         ["Caesar Salad", 8.99],
@@ -109,7 +115,6 @@ photo_drinks = Image.open("./drinks.png")
 photo_dessert = Image.open("./dessert.png")
 
 
-
 photo_salad = photo_salad.resize((105, 85))
 photo_meal = photo_meal.resize((105, 85))
 photo_soda = photo_soda.resize((105, 85))
@@ -184,11 +189,14 @@ def take_order_dessert(id_dessert):
         orders.append(
             [menu["dessert"][id_dessert][0], menu["dessert"][id_dessert][1], 1]
         )
+    else:
+        orders[i][-1] += 1
 
     item_values = menu["dessert"][id_dessert]
-
-    item_values.append(orders[-1][-1])
-
+    if orders:
+        item_values.append(orders[-1][-1])
+    else:
+        item_values.append(1)
     bill.insert("", "end", values=item_values)
 
 
@@ -218,20 +226,23 @@ frame_drinks.rowconfigure(2, weight=1)
 commands_drinks = menu["drinks"]
 
 
-def take_order_drinks(id_drink):
+def take_order_drinks(id_drinks):
     found = False
     for i, order_item in enumerate(orders):
-        if order_item[0] == menu["drinks"][id_drink][0]:
+        if order_item[0] == menu["drinks"][id_drinks][0]:
             found = True
             break
 
     if not found:
-        orders.append([menu["drinks"][id_drink][0], menu["drinks"][id_drink][1], 1])
+        orders.append([menu["drinks"][id_drinks][0], menu["drinks"][id_drinks][1], 1])
+    else:
+        orders[i][-1] += 1
 
-    item_values = menu["drinks"][id_drink]
-
-    item_values.append(orders[-1][-1])
-
+    item_values = menu["drinks"][id_drinks]
+    if orders:
+        item_values.append(orders[-1][-1])
+    else:
+        item_values.append(1)
     bill.insert("", "end", values=item_values)
 
 
@@ -261,10 +272,17 @@ def take_order_soda(id_soda):
         if order_item[0] == menu["soda"][id_soda][0]:
             found = True
             break
+
     if not found:
         orders.append([menu["soda"][id_soda][0], menu["soda"][id_soda][1], 1])
+    else:
+        orders[i][-1] += 1
+
     item_values = menu["soda"][id_soda]
-    item_values.append(orders[-1][-1])
+    if orders:
+        item_values.append(orders[-1][-1])
+    else:
+        item_values.append(1)
     bill.insert("", "end", values=item_values)
 
 
@@ -299,11 +317,14 @@ def take_order_meal(id_meal):
 
     if not found:
         orders.append([menu["meal"][id_meal][0], menu["meal"][id_meal][1], 1])
+    else:
+        orders[i][-1] += 1
 
     item_values = menu["meal"][id_meal]
-
-    item_values.append(orders[-1][-1])
-
+    if orders:
+        item_values.append(orders[-1][-1])
+    else:
+        item_values.append(1)
     bill.insert("", "end", values=item_values)
 
 
@@ -340,9 +361,14 @@ def take_order_salad(id_salad):
 
     if not found:
         orders.append([menu["salad"][id_salad][0], menu["salad"][id_salad][1], 1])
+    else:
+        orders[i][-1] += 1
 
     item_values = menu["salad"][id_salad]
-    item_values.append(orders[-1][-1])
+    if orders:
+        item_values.append(orders[-1][-1])
+    else:
+        item_values.append(1)
     bill.insert("", "end", values=item_values)
 
 
@@ -419,7 +445,7 @@ label_frame_ = tkinter.Label(frame_left, text="Table")
 def total():
     bil = []
     for i in orders:
-        bil.append(float(i[1]))
+        bil.append(float(i[1]) * int(i[-1]))
     sum_ = sum(bil)
     print("%.2f" % sum_)
 
