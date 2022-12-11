@@ -42,7 +42,7 @@ menu = {
 root = tkinter.Tk()
 root.title("Order System")
 root.geometry("960x500")
-root.resizable = False
+root.resizable(False, False)
 root.config(background="#088a88")
 
 
@@ -50,6 +50,7 @@ orders = []
 
 
 def Table():
+
     frame_mid_2.grid(row=1, column=1, sticky="WENS")
     frame_mid.grid_forget()
 
@@ -71,6 +72,7 @@ def salad():
 
 
 def meal():
+
     frame_meal.grid(row=1, column=1, sticky="WENS")
     frame_mid.grid_forget()
     frame_mid_2.grid_forget()
@@ -432,6 +434,7 @@ for i, item in enumerate(item_photo_list):
 
 # left
 
+
 Table_b = tkinter.Button(frame_left, text="TABLE", width=15, height=2, command=Table)
 Table_b.grid(row=2, column=0)
 
@@ -440,6 +443,34 @@ Menu_b.grid(row=3, column=0)
 
 
 label_frame_ = tkinter.Label(frame_left, text="Table")
+
+
+def delete_selected():
+
+    items = bill.get_children()
+    selected = bill.selection()
+
+    if selected:
+        item = bill.item(selected, "values")[0]
+
+        for i, order in enumerate(orders):
+            if order[0] == item:
+                index = i
+                break
+
+        quantity = int(order[2] - 1)
+        order[2] = quantity
+
+        if quantity == 0:
+            bill.delete(selected)
+            orders.pop(index)
+
+        else:
+            bill.delete(selected)
+
+
+button = tkinter.Button(frame_left, text="Delete order", command=delete_selected)
+button.grid(row=1, column=0)
 
 
 def total():
@@ -451,10 +482,12 @@ def total():
 
     l1 = tkinter.Label(frame_left, text="%.2f" % sum_, bg="lightblue")
     l1.grid(row=0, column=0, padx=5, pady=5)
+    orders.clear()
+    bill.delete(*bill.get_children())
 
 
 # right
-Menu_b = tkinter.Button(frame_right, text="Click Me", command=total)
+Menu_b = tkinter.Button(frame_right, text="Total Me", command=total)
 Menu_b.pack(fill="both", expand=True)
 
 
