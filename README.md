@@ -13,7 +13,7 @@ Installation
 
     Clone the repository:
 
-git clone https://github.com/YOUR_USERNAME/order-system.git
+git clone https://github.com/AIVAN22/order-system.git
 
 Navigate to the project directory:
 
