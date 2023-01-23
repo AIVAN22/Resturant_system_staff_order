@@ -1,56 +1,35 @@
-# Resturant_system-not_finished-
-Resurant__order_system
-Order System
+Order system 
 
-This is a Python-based order system for a restaurant. The system allows users to place orders for various menu items such as salads, meals, sodas, drinks, and desserts. The system also allows users to view their orders and the total bill.
-Prerequisites
+This is a Python script that uses Tkinter and PIL to create a GUI based ordering system for a restaurant. The script allows the user to select items from a menu, display the order and bill, and stores the order data in a MySQL database.
+Requirements
 
-    Python 3.8 or higher
-    mysql-connector-python 2.2.9 or higher
-    PIL (Python Imaging Library) 6.2.2 or higher
+    Python 3.x
+    Tkinter (Included with Python)
+    PIL (Python Imaging Library)
+    mysql-connector-python
 
 Installation
 
-    Clone the repository:
+To use this script, you will need to have the following software installed on your machine:
 
-git clone https://github.com/AIVAN22/order-system.git
+    MySQL server
 
-Navigate to the project directory:
+You will also need to install the required Python packages. You can do this by running the following command:
 
-cd order-system
-
-Install the required dependencies:
-
-pip install mysql-connector-python
-pip install Pillow
-
-Connect to your MySQL database and create a new database and table:
-
-mysql -u root -p
-CREATE DATABASE order_system;
-USE order_system;
-CREATE TABLE orders (table_id TEXT, bill TEXT);
-
-Run the program:
-
-    python order_system.py
-
-Features
-
-    Place orders for various menu items such as salads, meals, sodas, drinks, and desserts
-    View the total bill for all orders
-    View the orders for a specific table
-    Delete orders
-    Clear all orders for a specific table
+pip install mysql-connector-python pillow
 
 Usage
 
-    On the main menu, select the table number you wish to place an order for.
-    Select a menu category from the side panel (e.g. salad, meal, soda).
-    Select the specific menu item you wish to order.
-    The selected menu item will be added to the orders list and the total bill will be updated.
-    To view the orders for a specific table, select the table number and click the "View Orders" button.
-    To delete an order, select the order in the orders list and click the "Delete" button.
-    To clear all orders for a specific table, click the "Clear Orders" button.
+    Create a database with a name of your choice.
+    Update the con = mysql.connector.connect(host="", user="", password="", database="") variable in the script to match the host, user, password, and the name of the database you created.
+    Update the menu variable to match the menu of your restaurant.
+    Change the path of the images in the script to match the path of your images on your machine
+    Run the script by running the command
 
-Note: This program is for educational purposes only and is not intended for use in a real restaurant.
+python main.py
+
+Please make sure that the paths you provide for the images exists and are accessible.
+Note
+
+Make sure that the menu prices and items you want to add are correct and that the images you want to add exist in your machine and the path is correct. Also make sure that you have the required software and packages installed on your machine, and update the host, user, password and the name of the database in the script to match the name of your database.
+I apologize for any confusion caused by my previous answers.
