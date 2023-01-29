@@ -32,4 +32,3 @@ Please make sure that the paths you provide for the images exists and are access
 Note
 
 Make sure that the menu prices and items you want to add are correct and that the images you want to add exist in your machine and the path is correct. Also make sure that you have the required software and packages installed on your machine, and update the host, user, password and the name of the database in the script to match the name of your database.
-I apologize for any confusion caused by my previous answers.
