@@ -2,42 +2,67 @@ import tkinter
 from tkinter import NW, NO, RIGHT, LEFT, CENTER, TOP, ttk, NE
 from PIL import Image, ImageTk
 import mysql.connector
+import os
 
 
-con = mysql.connector.connect(host="localhost", user="root", password=" ", database=" ")
+con = mysql.connector.connect(
+    host=os.getenv("host"),
+    user=os.getenv("user"),
+    password=os.getenv("password"),
+    database=os.getenv("database"),
+)
 cursor = con.cursor()
 cursor.execute("CREATE TABLE IF NOT EXISTS orders (table_id TEXT,bill TEXT)")
 con.commit()
 
+cursor.execute("SELECT name, price FROM product_dessert")
+dessert_list = cursor.fetchall()
 
+
+cursor.execute("SELECT name,price FROM products_salads")
+salads = cursor.fetchall()
+salads_list = []
+salads_dic = {}
+for salad in salads:
+    salads_dic[salad[0]] = salad[1]
+
+
+cursor.execute("SELECT name,price FROM products_meal")
+meals = cursor.fetchall()
+meals_list = []
+meals_dic = {}
+for meal in meals:
+    meals_dic[meal[0]] = meal[1]
+
+
+cursor.execute("SELECT name,price FROM products_soda")
+sodas = cursor.fetchall()
+sodas_list = []
+sodas_dic = {}
+for soda in sodas:
+    sodas_dic[soda[0]] = soda[1]
+
+cursor.execute("SELECT name,price FROM products_drinks")
+drinks = cursor.fetchall()
+drinks_list = []
+drinks_dic = {}
+for drink in drinks:
+    drinks_dic[drink[0]] = drink[1]
+
+cursor.execute("SELECT name,price FROM product_dessert")
+desserts = cursor.fetchall()
+desserts_list = []
+desserts_dic = {}
+for dessert in desserts:
+    desserts_dic[dessert[0]] = dessert[1]
+# for meal in
 menu = {
-    "salad": [
-        ["Caesar Salad", 8.99],
-        ["Spinach Salad", 7.99],
-        ["Greek Salad", 9.99],
-    ],
-    "meal": [
-        ["Cheeseburger", 10.99],
-        ["Grilled Chicken Sandwich", 9.99],
-        ["Fish and Chips", 12.99],
-    ],
-    "soda": [
-        ["Coke", 1.99],
-        ["Sprite", 1.99],
-        ["Lemonade", 2.99],
-    ],
-    "drinks": [
-        ["Cabernet Sauvignon", 5.99],
-        ["Chardonnay", 5.99],
-        ["Merlot", 5.99],
-    ],
-    "dessert": [
-        ["Cheesecake", 4.99],
-        ["Chocolate Cake", 5.99],
-        ["Ice Cream Sundae", 3.99],
-    ],
+    "salad": salads_dic,
+    "meal": meals_dic,
+    "soda": sodas_dic,
+    "drinks": drinks_dic,
+    "dessert": desserts_dic,
 }
-
 
 root = tkinter.Tk()
 root.title("Order System")
@@ -50,7 +75,6 @@ orders = []
 
 
 def Table():
-
     frame_mid_2.grid(row=1, column=1, sticky="WENS")
     frame_mid.grid_forget()
 
@@ -72,7 +96,6 @@ def salad():
 
 
 def meal():
-
     frame_meal.grid(row=1, column=1, sticky="WENS")
     frame_mid.grid_forget()
     frame_mid_2.grid_forget()
@@ -110,11 +133,11 @@ root.rowconfigure(2, weight=1)
 
 
 # icon images
-photo_salad = Image.open("./salad.png")
-photo_meal = Image.open("./meal.png")
-photo_soda = Image.open("./soda.png")
-photo_drinks = Image.open("./drinks.png")
-photo_dessert = Image.open("./dessert.png")
+photo_salad = Image.open("./static/salad.png")
+photo_meal = Image.open("./static/meal.png")
+photo_soda = Image.open("./static/soda.png")
+photo_drinks = Image.open("./static/drinks.png")
+photo_dessert = Image.open("./static/dessert.png")
 
 
 photo_salad = photo_salad.resize((105, 85))
@@ -179,22 +202,25 @@ frame_dessert.rowconfigure(0, weight=1)
 frame_dessert.rowconfigure(1, weight=1)
 frame_dessert.rowconfigure(2, weight=1)
 
+
 # DESSERT BUTT
 def take_order_dessert(id_dessert):
+    dessert_name = list(menu["dessert"].keys())[id_dessert]
+    dessert_price = list(menu["dessert"].values())[id_dessert]
+    print(dessert_name)
     found = False
+
     for i, order_item in enumerate(orders):
-        if order_item[0] == menu["dessert"][id_dessert][0]:
+        if order_item[0] == dessert_name:
             found = True
             break
 
     if not found:
-        orders.append(
-            [menu["dessert"][id_dessert][0], menu["dessert"][id_dessert][1], 1]
-        )
+        orders.append([dessert_name, dessert_price, 1])
     else:
         orders[i][-1] += 1
 
-    item_values = menu["dessert"][id_dessert]
+    item_values = [dessert_name, dessert_price]
     if orders:
         item_values.append(orders[-1][-1])
     else:
@@ -207,7 +233,10 @@ COLUMNS = 4
 for i, item in enumerate(commands_desserts):
     id_dessert = i
     dessert_button = tkinter.Button(
-        frame_dessert, bg="yellow", command=lambda id=id_dessert: take_order_dessert(id)
+        frame_dessert,
+        bg="yellow",
+        text=list(menu["dessert"].keys())[id_dessert],
+        command=lambda id=id_dessert: take_order_dessert(id),
     )
     row, column = divmod(i, COLUMNS)
     dessert_button.grid(row=row, column=column, sticky="news", padx=10, pady=10)
@@ -229,18 +258,22 @@ commands_drinks = menu["drinks"]
 
 
 def take_order_drinks(id_drinks):
+    drinks_name = list(menu["drinks"].keys())[id_drinks]
+    drinks_price = list(menu["drinks"].values())[id_drinks]
+    print(drinks_name)
     found = False
+
     for i, order_item in enumerate(orders):
-        if order_item[0] == menu["drinks"][id_drinks][0]:
+        if order_item[0] == drinks_name:
             found = True
             break
 
     if not found:
-        orders.append([menu["drinks"][id_drinks][0], menu["drinks"][id_drinks][1], 1])
+        orders.append([drinks_name, drinks_price, 1])
     else:
         orders[i][-1] += 1
 
-    item_values = menu["drinks"][id_drinks]
+    item_values = [drinks_name, drinks_price]
     if orders:
         item_values.append(orders[-1][-1])
     else:
@@ -252,7 +285,10 @@ COLUMNS = 4
 for i, item in enumerate(commands_drinks):
     id_drink = i
     drink_button = tkinter.Button(
-        frame_drinks, bg="yellow", command=lambda id=id_drink: take_order_drinks(id)
+        frame_drinks,
+        bg="yellow",
+        text=list(menu["drinks"].keys())[id_drink],
+        command=lambda id=id_drink: take_order_drinks(id),
     )
     row, column = divmod(i, COLUMNS)
     drink_button.grid(row=row, column=column, sticky="news", padx=10, pady=10)
@@ -267,20 +303,26 @@ frame_soda.columnconfigure(3, weight=1)
 frame_soda.rowconfigure(0, weight=1)
 frame_soda.rowconfigure(1, weight=1)
 frame_soda.rowconfigure(2, weight=1)
+
+
 # SODA BUTT
 def take_order_soda(id_soda):
+    soda_name = list(menu["soda"].keys())[id_soda]
+    soda_price = list(menu["soda"].values())[id_soda]
+    print(soda_name)
     found = False
+
     for i, order_item in enumerate(orders):
-        if order_item[0] == menu["soda"][id_soda][0]:
+        if order_item[0] == soda_name:
             found = True
             break
 
     if not found:
-        orders.append([menu["soda"][id_soda][0], menu["soda"][id_soda][1], 1])
+        orders.append([soda_name, soda_price, 1])
     else:
         orders[i][-1] += 1
 
-    item_values = menu["soda"][id_soda]
+    item_values = [soda_name, soda_price]
     if orders:
         item_values.append(orders[-1][-1])
     else:
@@ -293,7 +335,10 @@ COLUMNS = 4
 for i, item in enumerate(commandss_sodas):
     id_soda = i
     soda_button = tkinter.Button(
-        frame_soda, bg="yellow", command=lambda id=id_soda: take_order_soda(id)
+        frame_soda,
+        bg="yellow",
+        text=list(menu["soda"].keys())[id_soda],
+        command=lambda id=id_soda: take_order_soda(id),
     )
     row, column = divmod(i, COLUMNS)
     soda_button.grid(row=row, column=column, sticky="news", padx=10, pady=10)
@@ -309,20 +354,25 @@ frame_meal.rowconfigure(0, weight=1)
 frame_meal.rowconfigure(1, weight=1)
 frame_meal.rowconfigure(2, weight=1)
 
+
 # MEAL BUTT
 def take_order_meal(id_meal):
+    meal_name = list(menu["meal"].keys())[id_meal]
+    meal_price = list(menu["meal"].values())[id_meal]
+    print(meal_name)
     found = False
+
     for i, order_item in enumerate(orders):
-        if order_item[0] == menu["meal"][id_meal][0]:
+        if order_item[0] == meal_name:
             found = True
             break
 
     if not found:
-        orders.append([menu["meal"][id_meal][0], menu["meal"][id_meal][1], 1])
+        orders.append([meal_name, meal_price, 1])
     else:
         orders[i][-1] += 1
 
-    item_values = menu["meal"][id_meal]
+    item_values = [meal_name, meal_price]
     if orders:
         item_values.append(orders[-1][-1])
     else:
@@ -335,7 +385,10 @@ COLUMNS = 4
 for i, item in enumerate(commands_meals):
     id_meal = i
     meal_button = tkinter.Button(
-        frame_meal, bg="yellow", command=lambda id=id_meal: take_order_meal(id)
+        frame_meal,
+        bg="yellow",
+        text=list(menu["meal"].keys())[id_meal],
+        command=lambda id=id_meal: take_order_meal(id),
     )
     row, column = divmod(i, COLUMNS)
     meal_button.grid(row=row, column=column, sticky="news", padx=10, pady=10)
@@ -355,18 +408,22 @@ frame_salad.rowconfigure(2, weight=1)
 
 
 def take_order_salad(id_salad):
+    salad_name = list(menu["salad"].keys())[id_salad]
+    salad_price = list(menu["salad"].values())[id_salad]
+    print(salad_name)
     found = False
+
     for i, order_item in enumerate(orders):
-        if order_item[0] == menu["salad"][id_salad][0]:
+        if order_item[0] == salad_name:
             found = True
             break
 
     if not found:
-        orders.append([menu["salad"][id_salad][0], menu["salad"][id_salad][1], 1])
+        orders.append([salad_name, salad_price, 1])
     else:
         orders[i][-1] += 1
 
-    item_values = menu["salad"][id_salad]
+    item_values = [salad_name, salad_price]
     if orders:
         item_values.append(orders[-1][-1])
     else:
@@ -379,7 +436,10 @@ COLUMNS = 4
 for i, item in enumerate(commands_salads):
     id_salad = i
     salad_button = tkinter.Button(
-        frame_salad, bg="yellow", command=lambda id=id_salad: take_order_salad(id)
+        frame_salad,
+        bg="yellow",
+        text=list(menu["salad"].keys())[id_salad],
+        command=lambda id=id_salad: take_order_salad(id),
     )
     row, column = divmod(i, COLUMNS)
     salad_button.grid(row=row, column=column, sticky="news", padx=10, pady=10)
@@ -450,7 +510,6 @@ label_frame_ = tkinter.Label(frame_left, text="Table")
 
 
 def delete_selected():
-
     items = bill.get_children()
     selected = bill.selection()
 
